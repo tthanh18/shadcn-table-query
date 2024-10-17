@@ -6,7 +6,7 @@ import './styles/styles.css'
 const App = () => {
     return (
         <ThemeProvider defaultTheme='dark' storageKey='ui-theme'>
-            <main className='h-screen w-screen flex justify-center pt-10'>
+            <main className='h-screen flex justify-center pt-10'>
                 <ListUser />
             </main>
             <Toaster

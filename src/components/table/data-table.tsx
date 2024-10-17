@@ -1,8 +1,10 @@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
 import { BaseSearchModel, ESortType } from '@/models'
 import {
+    Column,
     ColumnDef,
     ColumnFiltersState,
+    ColumnPinningState,
     SortingState,
     VisibilityState,
     flexRender,
@@ -13,10 +15,11 @@ import * as React from 'react'
 import { DataTablePagination } from './data-table-pagination'
 import { DataTableSpin } from './data-table-spin'
 import { DataTableToolbar } from './data-table-toolbar'
-import { DataTableFilter } from './data-table.types'
+import { DataTableColumn, DataTableFilter } from './data-table.types'
+import { CSSProperties } from 'react'
 
 export interface DataTableProps<TData, TSearch, TValue> {
-    columns: ColumnDef<TData, TValue>[]
+    columns: DataTableColumn<TData, TValue>[]
     data: TData[]
     isLoading?: boolean
     params: TSearch
@@ -26,6 +29,27 @@ export interface DataTableProps<TData, TSearch, TValue> {
     filterOptions?: DataTableFilter<TData>[]
     //offset limit or page limit
     paginationType?: 'offset' | 'page'
+}
+
+const getCommonPinningStyles = (column: Column<any>): CSSProperties => {
+    const isPinned = column.getIsPinned()
+    const isLastLeftPinnedColumn = isPinned === 'left' && column.getIsLastColumn('left')
+    const isFirstRightPinnedColumn = isPinned === 'right' && column.getIsFirstColumn('right')
+
+    return {
+        boxShadow: isLastLeftPinnedColumn
+            ? '-4px 0 4px -4px gray inset'
+            : isFirstRightPinnedColumn
+            ? '4px 0 4px -4px gray inset'
+            : undefined,
+        left: isPinned === 'left' ? `${column.getStart('left')}px` : undefined,
+        right: isPinned === 'right' ? `${column.getAfter('right')}px` : undefined,
+        opacity: isPinned ? 0.95 : 1,
+        position: isPinned ? 'sticky' : 'relative',
+        width: column.getSize(),
+        zIndex: isPinned ? 1 : 0,
+        background: isPinned ? 'hsl(var(--background))' : 'transparent',
+    }
 }
 
 export function DataTable<TData, TSearch extends BaseSearchModel, TValue = any>({
@@ -48,8 +72,36 @@ export function DataTable<TData, TSearch extends BaseSearchModel, TValue = any>(
         pageIndex: params.page ?? 0,
     })
 
+    // const _columns = columns.map((column) => {
+    //     const { isSticky, sticky, ...col } = column
+    //     return col
+    // })
+
+    const getColumnPinning = (): ColumnPinningState => {
+        const left: string[] = []
+        const right: string[] = []
+
+        columns.forEach(({ isSticky, sticky, id }) => {
+            if (!isSticky) return
+
+            if (sticky === 'left') {
+                left.push(id)
+            } else {
+                right.push(id)
+            }
+        })
+        return {
+            left,
+            right,
+        }
+    }
+
     const table = useReactTable({
+        initialState: {
+            columnPinning: getColumnPinning(),
+        },
         data,
+        // columns: _columns,
         columns,
         state: {
             sorting,
@@ -154,8 +206,16 @@ export function DataTable<TData, TSearch extends BaseSearchModel, TValue = any>(
                             {table.getHeaderGroups().map((headerGroup) => (
                                 <TableRow key={headerGroup.id}>
                                     {headerGroup.headers.map((header) => {
+                                        const { column } = header
+
                                         return (
-                                            <TableHead key={header.id} colSpan={header.colSpan}>
+                                            <TableHead
+                                                key={header.id}
+                                                colSpan={header.colSpan}
+                                                style={{
+                                                    ...getCommonPinningStyles(column),
+                                                }}
+                                            >
                                                 {header.isPlaceholder
                                                     ? null
                                                     : flexRender(header.column.columnDef.header, header.getContext())}
@@ -169,11 +229,19 @@ export function DataTable<TData, TSearch extends BaseSearchModel, TValue = any>(
                             {table.getRowModel().rows?.length ? (
                                 table.getRowModel().rows.map((row) => (
                                     <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
-                                        {row.getVisibleCells().map((cell) => (
-                                            <TableCell key={cell.id}>
-                                                {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                            </TableCell>
-                                        ))}
+                                        {row.getVisibleCells().map((cell) => {
+                                            const { column } = cell
+                                            return (
+                                                <TableCell
+                                                    key={cell.id}
+                                                    style={{
+                                                        ...getCommonPinningStyles(column),
+                                                    }}
+                                                >
+                                                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                                </TableCell>
+                                            )
+                                        })}
                                     </TableRow>
                                 ))
                             ) : (

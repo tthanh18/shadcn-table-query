@@ -1,5 +1,5 @@
 import { FC, useCallback, useMemo, useState } from 'react'
-import { DataTable, DataTableColumnHeader, DataTableFilter, DataTableRowActions } from '@/components/table'
+import { DataTable, DataTableColumn, DataTableColumnHeader, DataTableFilter, DataTableRowActions } from '@/components/table'
 import { BaseSearchModel } from '@/models'
 import { ColumnDef } from '@tanstack/react-table'
 import { Button } from '@/components/ui/button'
@@ -22,8 +22,8 @@ export const ListUser: FC = () => {
         ...new UserSearchModel(),
     })
 
-    const columns: ColumnDef<UserModel>[] = useMemo(() => {
-        const res: ColumnDef<UserModel>[] = [
+    const columns = useMemo(() => {
+        const res: DataTableColumn<UserModel>[] = [
             {
                 accessorKey: 'username',
                 header: ({ column }) => <DataTableColumnHeader column={column} title='Username' />,
@@ -59,7 +59,45 @@ export const ListUser: FC = () => {
                 },
             },
             {
+                accessorKey: 'displayName',
+                header: ({ column }) => <DataTableColumnHeader column={column} title='Display Name' />,
+                cell: ({ row }) => {
+                    const data = row.original
+                    return (
+                        <div className='flex space-x-2'>
+                            <span>{row.getValue('displayName')}</span>
+                        </div>
+                    )
+                },
+            },
+            {
+                accessorKey: 'displayName',
+                header: ({ column }) => <DataTableColumnHeader column={column} title='Display Name' />,
+                cell: ({ row }) => {
+                    const data = row.original
+                    return (
+                        <div className='flex space-x-2'>
+                            <span>{row.getValue('displayName')}</span>
+                        </div>
+                    )
+                },
+            },
+            {
+                accessorKey: 'displayName',
+                header: ({ column }) => <DataTableColumnHeader column={column} title='Display Name' />,
+                cell: ({ row }) => {
+                    const data = row.original
+                    return (
+                        <div className='flex space-x-2'>
+                            <span>{row.getValue('displayName')}</span>
+                        </div>
+                    )
+                },
+            },
+            {
                 id: 'actions',
+                isSticky: true,
+                size: 50,
                 cell: ({ row }) => {
                     return (
                         <div className='flex gap-2'>
