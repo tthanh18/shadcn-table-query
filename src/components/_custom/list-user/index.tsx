@@ -59,42 +59,6 @@ export const ListUser: FC = () => {
                 },
             },
             {
-                accessorKey: 'displayName',
-                header: ({ column }) => <DataTableColumnHeader column={column} title='Display Name' />,
-                cell: ({ row }) => {
-                    const data = row.original
-                    return (
-                        <div className='flex space-x-2'>
-                            <span>{row.getValue('displayName')}</span>
-                        </div>
-                    )
-                },
-            },
-            {
-                accessorKey: 'displayName',
-                header: ({ column }) => <DataTableColumnHeader column={column} title='Display Name' />,
-                cell: ({ row }) => {
-                    const data = row.original
-                    return (
-                        <div className='flex space-x-2'>
-                            <span>{row.getValue('displayName')}</span>
-                        </div>
-                    )
-                },
-            },
-            {
-                accessorKey: 'displayName',
-                header: ({ column }) => <DataTableColumnHeader column={column} title='Display Name' />,
-                cell: ({ row }) => {
-                    const data = row.original
-                    return (
-                        <div className='flex space-x-2'>
-                            <span>{row.getValue('displayName')}</span>
-                        </div>
-                    )
-                },
-            },
-            {
                 id: 'actions',
                 isSticky: true,
                 size: 50,
