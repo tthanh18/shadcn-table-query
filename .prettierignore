@@ -1,0 +1,64 @@
+.next/
+public/
+node_modules/
+
+src/shared/
+src/components/shared/icons.tsx
+
+*code-block-combobox*
+*draggable*
+
+tsconfig.json
+
+cloudbuild.beta.yaml
+cloudbuild.production.yaml
+cloudbuild.staging.yaml
+
+.env
+
+*.css
+*.scss
+*.less
+
+# *.json
+
+# dependencies
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# local env files
+.env*.local
+.vscode*
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+yarn.lock
+
+package.json
+package-lock.json
+
+
